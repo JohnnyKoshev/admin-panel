@@ -1,0 +1,30 @@
+.signInContainer{
+    background-image: url('../../assets/sign-in-bg.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+
+
+    .signInFormContainer{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        min-height: 100vh;
+        gap: 1rem;
+
+        .signInFormInput{
+
+        }
+
+    }
+}
+
+.signInFormError{
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
