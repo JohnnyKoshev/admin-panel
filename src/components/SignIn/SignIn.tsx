@@ -5,8 +5,9 @@ import {Button, TextField} from "@mui/material";
 import SignInService from "../../services/SigIn";
 import {useLoader} from "../Loader/Loader";
 import {useNavigate} from "react-router-dom";
+import {observer} from "mobx-react";
 
-export default function SignIn() {
+const SignIn = observer(() => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const {showLoader, hideLoader} = useLoader();
@@ -25,8 +26,10 @@ export default function SignIn() {
             try {
                 const response = await SignInService.login(username as string, password as string);
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('data', JSON.stringify(response.data));
                 setError('');
                 hideLoader();
+                navigate('/main');
             } catch (error) {
                 setError("Login failed. Please check your username and password.")
                 hideLoader();
@@ -77,5 +80,5 @@ export default function SignIn() {
 
 
     </div>;
-}
-
+});
+export default SignIn
