@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from './Layout.module.scss';
 import {Outlet, useNavigate} from "react-router-dom";
 import ProductIcon from '../../../assets/product-icon.png';
@@ -6,6 +6,7 @@ import UserIcon from '../../../assets/user-icon.png';
 import PostIcon from '../../../assets/post-icon.png';
 import TodoIcon from '../../../assets/todo-icon.png';
 import {observer} from "mobx-react";
+import SignInService from "../../../services/SigInService";
 
 
 const Layout = observer(() => {
@@ -63,11 +64,12 @@ const Layout = observer(() => {
                     className={styles.layoutContentName}>{sideBarElements[selected] ? sideBarElements[selected].text : "Text"}</span>
                 <span className={styles.adminBadgeContainer}>
                     <span className={styles.adminBadgeIconContainer}>
-                    <img src={JSON.parse(localStorage.getItem('data')!)["image"]} alt=""
+                    <img src={SignInService.getCurrentUser()["image"]} alt=""
                          className={styles.adminBadgeIcon}/>
                     </span>
                     <div className={styles.adminBadgeTextContainer}>
-                        <span className={styles.adminBadgeName}>{JSON.parse(localStorage.getItem('data')!)["firstName"] + ' ' + JSON.parse(localStorage.getItem('data')!)["lastName"]}</span>
+                        <span
+                            className={styles.adminBadgeName}>{SignInService.getCurrentUser()["firstName"] + ' ' + SignInService.getCurrentUser()["lastName"]}</span>
                         <span className={styles.adminBadgeStatus}>Admin</span>
                     </div>
                 </span>

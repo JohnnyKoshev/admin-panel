@@ -73,13 +73,11 @@ export type Optional<T> = {
 };
 
 interface ISignInService {
-    data: Optional<IUserData>;
     login: (username: string, password: string) => Promise<AxiosResponse<any, any>>;
-    getCurrentUser: (token: string) => Promise<AxiosResponse<any, any>>;
+    getCurrentUser: () => Optional<IUserData>;
 }
 
 const SignInService: ISignInService = {
-    data: {},
     login: async (username: string, password: string) => {
         return axiosInstance.post('/auth/login', {
             username,
@@ -89,13 +87,8 @@ const SignInService: ISignInService = {
             }
         });
     },
-    getCurrentUser: (token: string) => {
-        return axiosInstance.get('/auth/me', {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        })
+    getCurrentUser: () => {
+        return JSON.parse(localStorage.getItem('data') as string);
     }
 }
 export default SignInService;

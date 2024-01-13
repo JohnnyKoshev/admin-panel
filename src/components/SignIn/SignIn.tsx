@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import styles from './SignIn.module.scss';
 import SignInIcon from '../../assets/sign-in-icon.png';
 import {Button, TextField} from "@mui/material";
-import SignInService from "../../services/SigIn";
+import SignInService from "../../services/SigInService";
 import {useLoader} from "../Loader/Loader";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react";

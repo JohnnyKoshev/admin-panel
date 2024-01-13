@@ -1,5 +1,31 @@
-.contentContainer{
-  width: 100%;
-  min-height: 90%;
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 4rem;
+  padding-top: 3rem;
+  width: 85vw;
+  min-height: calc(100vh - 5vh - 2rem);
   background-color: #F5F6FA;
+
+  margin-top: 5vh;
+  margin-left: calc(15vw + 2rem);
+  overflow-x: hidden;
+
+  .contentTopContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3rem;
+
+    .contentActionsContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
 }
