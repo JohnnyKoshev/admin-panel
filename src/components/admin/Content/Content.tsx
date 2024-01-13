@@ -2,17 +2,35 @@ import React, {useEffect, useState} from "react";
 import styles from "./Content.module.scss";
 import {Button, IconButton, InputBase, Paper, TextField} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
+import {DataGrid, GridColDef, GridRowId, useGridApiRef} from '@mui/x-data-grid';
 import TrashIcon from '../../../assets/delete-btn.png';
 import TrashIconDisabled from '../../../assets/delete-btn-disabled.png';
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {useLoader} from "../../Loader/Loader";
+import {debounce} from 'lodash';
 
-const Content = ({columns, rows}) => {
+const Content = ({columns, rows, service, store}) => {
     const [isSelection, setIsSelection] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
     const [refactoredColumns, setRefactoredColumns] = useState<Array<GridColDef<any, any, any>>>([]);
     const [value, setValue] = useState('');
+    const {showLoader, hideLoader} = useLoader();
+    const apiRef = useGridApiRef();
 
+    const handleDeleteEntryDebounced = debounce(async (id) => {
+        showLoader()
+        if (await service.deleteOne(id))
+            store.deleteOne(id);
+        hideLoader();
+    }, 500);
+    const handleDeleteEntriesDebounced = debounce(async () => {
+        showLoader();
+        if (isSelection)
+            if (await service.deleteMany(selectedIds))
+                store.deleteMany(selectedIds);
+        hideLoader();
+    }, 500);
 
     useEffect(() => {
         setRefactoredColumns([{
@@ -21,7 +39,7 @@ const Content = ({columns, rows}) => {
                     <IconButton>
                         <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => handleDeleteEntryDebounced(params.id)}>
                         <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
                     </IconButton>
                 </div>
@@ -50,7 +68,8 @@ const Content = ({columns, rows}) => {
                     Add Entry
                 </Button>
                 {isSelection ?
-                    <img src={TrashIcon} alt="delete icon" style={{width: "50px", cursor: "pointer"}}/> :
+                    <img src={TrashIcon} alt="delete icon" style={{width: "50px", cursor: "pointer"}}
+                         onClick={handleDeleteEntriesDebounced}/> :
                     <img src={TrashIconDisabled} alt="delete icon disabled" style={{width: "50px"}}/>}
             </span>
         </div>
@@ -58,12 +77,13 @@ const Content = ({columns, rows}) => {
             placeholder="Selected Cell Value"
             disabled
             multiline
-            rows={2}
+            minRows={2}
             maxRows={3}
             value={value}
         />
         <div style={{height: '50vh', width: '100%'}}>
             <DataGrid
+                apiRef={apiRef}
                 disableRowSelectionOnClick
                 rows={rows}
                 columns={refactoredColumns}
@@ -75,10 +95,13 @@ const Content = ({columns, rows}) => {
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
                 onRowSelectionModelChange={(ids, details) => {
-                    if (ids.length > 0)
+                    if (ids.length > 0) {
+                        setSelectedIds(ids);
                         setIsSelection(true);
-                    else
+                    } else {
+                        setSelectedIds([]);
                         setIsSelection(false);
+                    }
                 }}
                 onCellClick={(params, event) => {
                     setValue(params.formattedValue as string)

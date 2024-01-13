@@ -15,6 +15,14 @@ class UsersStore {
         return this.usersData;
     }
 
+    deleteOne(id) {
+        this.usersData = this.usersData.filter((user: any) => user.id !== id);
+    }
+
+    deleteMany(ids) {
+        this.usersData = this.usersData.filter((user: any) => !ids.includes(user.id));
+    }
+
 }
 
 const usersStore = new UsersStore();

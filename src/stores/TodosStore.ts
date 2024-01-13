@@ -15,6 +15,13 @@ class TodosStore {
         return this.todosData;
     }
 
+    deleteOne(id) {
+        this.todosData = this.todosData.filter((todo: any) => todo.id !== id);
+    }
+
+    deleteMany(ids) {
+        this.todosData = this.todosData.filter((todo: any) => !ids.includes(todo.id));
+    }
 }
 
 const todosStore = new TodosStore();

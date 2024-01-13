@@ -15,6 +15,14 @@ class ProductsStore {
         return this.productsData;
     }
 
+    deleteOne(id) {
+        this.productsData = this.productsData.filter((product: any) => product.id !== id);
+    }
+
+    deleteMany(ids) {
+        this.productsData = this.productsData.filter((product: any) => !ids.includes(product.id));
+    }
+
 }
 
 const productsStore = new ProductsStore();

@@ -25,6 +25,7 @@ const Users = observer(() => {
 
 
     useEffect(() => {
+        if (usersStore.users.length > 0) return;
         showLoader();
         UsersService.getUsers().then((data) => {
             usersStore.users = data.users;
@@ -34,7 +35,7 @@ const Users = observer(() => {
     }, [])
 
 
-    return <Content columns={columns} rows={usersStore.users}/>
+    return <Content columns={columns} rows={usersStore.users} service={UsersService} store={usersStore}/>
 });
 
 export default Users;

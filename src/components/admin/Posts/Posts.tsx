@@ -25,6 +25,7 @@ const Posts = observer(() => {
 
 
     useEffect(() => {
+        if(postsStore.posts.length > 0) return;
         showLoader();
         PostsService.getPosts().then((data) => {
             postsStore.posts = data.posts;
@@ -34,7 +35,7 @@ const Posts = observer(() => {
     }, [])
 
 
-    return <Content columns={columns} rows={postsStore.posts}/>
+    return <Content columns={columns} rows={postsStore.posts} service={PostsService} store={postsStore}/>
 });
 
 export default Posts;

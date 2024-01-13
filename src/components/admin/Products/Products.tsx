@@ -27,16 +27,16 @@ const Products = observer(() => {
     ];
 
     useEffect(() => {
+        if (productsStore.products.length > 0) return;
         showLoader();
         ProductsService.getProducts().then((data) => {
             productsStore.products = data.products;
             hideLoader();
         })
-
     }, [])
 
 
-    return <Content columns={columns} rows={productsStore.products}/>
+    return <Content columns={columns} rows={productsStore.products} service={ProductsService} store={productsStore}/>
 });
 
 export default Products;

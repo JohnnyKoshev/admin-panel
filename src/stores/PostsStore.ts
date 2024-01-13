@@ -15,6 +15,14 @@ class PostsStore {
         return this.postsData;
     }
 
+    deleteOne(id) {
+        this.postsData = this.postsData.filter((post: any) => post.id !== id);
+    }
+
+    deleteMany(ids) {
+        this.postsData = this.postsData.filter((post: any) => !ids.includes(post.id));
+    }
+
 }
 
 const postsStore = new PostsStore();
