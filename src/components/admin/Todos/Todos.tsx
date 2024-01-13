@@ -11,7 +11,7 @@ const Todos = observer(() => {
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},
-        {field: 'todo', headerName: 'Todo', width: 200},
+        {field: 'todo', headerName: 'Todo', width: 500},
         {field: 'completed', headerName: 'Completed', width: 130},
         {field: 'userId', headerName: 'User ID', width: 130},
     ];
