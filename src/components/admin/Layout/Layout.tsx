@@ -28,7 +28,6 @@ const Layout = observer(() => {
         const textElement: HTMLSpanElement = event.currentTarget
             .childNodes[1] as HTMLSpanElement;
         setSelected(index);
-        console.log(selected)
         navigate(`/main/${textElement.innerText.toLowerCase()}`);
     };
 

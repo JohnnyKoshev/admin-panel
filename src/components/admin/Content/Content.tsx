@@ -23,14 +23,14 @@ const Content = ({columns, rows, service, store}) => {
         if (await service.deleteOne(id))
             store.deleteOne(id);
         hideLoader();
-    }, 500);
+    }, 300);
     const handleDeleteEntriesDebounced = debounce(async () => {
         showLoader();
         if (isSelection)
             if (await service.deleteMany(selectedIds))
                 store.deleteMany(selectedIds);
         hideLoader();
-    }, 500);
+    }, 300);
 
     useEffect(() => {
         setRefactoredColumns([{
