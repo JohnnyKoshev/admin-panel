@@ -72,12 +72,13 @@ export type Optional<T> = {
     [P in keyof T]?: T[P];
 };
 
-interface ISignInService {
+interface IAuthService {
     login: (username: string, password: string) => Promise<AxiosResponse<any, any>>;
     getCurrentUser: () => Optional<IUserData>;
+    logout: () => void;
 }
 
-const SignInService: ISignInService = {
+const AuthService: IAuthService = {
     login: async (username: string, password: string) => {
         return axiosInstance.post('/auth/login', {
             username,
@@ -89,6 +90,11 @@ const SignInService: ISignInService = {
     },
     getCurrentUser: () => {
         return JSON.parse(localStorage.getItem('data') as string);
+    },
+    logout: () => {
+        localStorage.removeItem('data');
+        localStorage.removeItem('token');
+        window.location.href = '/sign-in';
     }
 }
-export default SignInService;
+export default AuthService;

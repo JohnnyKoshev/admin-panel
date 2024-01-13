@@ -17,9 +17,13 @@ const Content = ({columns, rows}) => {
     useEffect(() => {
         setRefactoredColumns([{
             field: 'actions', headerName: 'Actions', width: 130, renderCell: (params) => (
-                <div style={{display: "flex", flexDirection: "row", gap: "0.5rem"}}>
-                    <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
-                    <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
+                <div style={{display: "flex", flexDirection: "row"}}>
+                    <IconButton>
+                        <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
+                    </IconButton>
+                    <IconButton>
+                        <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
+                    </IconButton>
                 </div>
             )
         }, ...columns]);
@@ -45,8 +49,9 @@ const Content = ({columns, rows}) => {
                 <Button variant="contained" color="success">
                     Add Entry
                 </Button>
-                {isSelection ? <img src={TrashIcon} alt="delete icon" style={{width: "50px", cursor: "pointer"}}/> :
-                    <img src={TrashIconDisabled} alt="delete icon" style={{width: "50px"}}/>}
+                {isSelection ?
+                    <img src={TrashIcon} alt="delete icon" style={{width: "50px", cursor: "pointer"}}/> :
+                    <img src={TrashIconDisabled} alt="delete icon disabled" style={{width: "50px"}}/>}
             </span>
         </div>
         <TextField

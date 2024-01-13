@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import styles from './SignIn.module.scss';
 import SignInIcon from '../../assets/sign-in-icon.png';
 import {Button, TextField} from "@mui/material";
-import SignInService from "../../services/SigInService";
+import AuthService from "../../services/AuthService";
 import {useLoader} from "../Loader/Loader";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react";
@@ -24,7 +24,7 @@ const SignIn = observer(() => {
         if (username && password) {
             showLoader();
             try {
-                const response = await SignInService.login(username as string, password as string);
+                const response = await AuthService.login(username as string, password as string);
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('data', JSON.stringify(response.data));
                 setError('');

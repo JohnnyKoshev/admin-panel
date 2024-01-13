@@ -6,7 +6,9 @@ import UserIcon from '../../../assets/user-icon.png';
 import PostIcon from '../../../assets/post-icon.png';
 import TodoIcon from '../../../assets/todo-icon.png';
 import {observer} from "mobx-react";
-import SignInService from "../../../services/SigInService";
+import AuthService from "../../../services/AuthService";
+import LogoutIcon from '@mui/icons-material/Logout';
+import {IconButton} from "@mui/material";
 
 
 const Layout = observer(() => {
@@ -35,6 +37,7 @@ const Layout = observer(() => {
 
         <div className={styles.layoutSideBar}>
             <span className={styles.layoutSideBarHeader}>Admin Panel</span>
+            <span className={styles.sideBarContentContainer}>
             <div className={styles.sideBarElementsContainer}>
                 {sideBarElements.map((element, index) => (
                     <span
@@ -57,6 +60,15 @@ const Layout = observer(() => {
                 </span>
                 ))}
             </div>
+            <IconButton onClick={() => {
+                AuthService.logout()
+            }}>
+                   <span className={styles.sideBarBottomContainer}>
+                   <LogoutIcon color={"error"}/>
+                   <span>Sign Out</span>
+                   </span>
+            </IconButton>
+        </span>
         </div>
         <div className={styles.layoutContentContainer}>
             <span className={styles.layoutContentHeader}>
@@ -64,12 +76,12 @@ const Layout = observer(() => {
                     className={styles.layoutContentName}>{sideBarElements[selected] ? sideBarElements[selected].text : "Text"}</span>
                 <span className={styles.adminBadgeContainer}>
                     <span className={styles.adminBadgeIconContainer}>
-                    <img src={SignInService.getCurrentUser()["image"]} alt=""
+                    <img src={AuthService.getCurrentUser()["image"]} alt=""
                          className={styles.adminBadgeIcon}/>
                     </span>
                     <div className={styles.adminBadgeTextContainer}>
                         <span
-                            className={styles.adminBadgeName}>{SignInService.getCurrentUser()["firstName"] + ' ' + SignInService.getCurrentUser()["lastName"]}</span>
+                            className={styles.adminBadgeName}>{AuthService.getCurrentUser()["firstName"] + ' ' + AuthService.getCurrentUser()["lastName"]}</span>
                         <span className={styles.adminBadgeStatus}>Admin</span>
                     </div>
                 </span>
