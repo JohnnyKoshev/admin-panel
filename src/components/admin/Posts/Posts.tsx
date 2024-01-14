@@ -5,10 +5,11 @@ import {GridColDef} from "@mui/x-data-grid";
 import {useLoader} from "../../Loader/Loader";
 import PostsService from "../../../services/PostsService";
 import postsStore from "../../../stores/PostsStore";
+import IPost from "../../../interfaces/IPost";
 
 const Posts = observer(() => {
     const {showLoader, hideLoader} = useLoader();
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState<IPost[]>([]);
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},

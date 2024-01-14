@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
+import ITodo from "../interfaces/ITodo";
 
 class TodosStore {
-    todosData = []
+    todosData: ITodo[] = []
 
     constructor() {
         makeAutoObservable(this);
@@ -15,16 +16,16 @@ class TodosStore {
         return this.todosData;
     }
 
-    deleteOne(id) {
+    deleteOne(id: number) {
         this.todosData = this.todosData.filter((todo: any) => todo.id !== id);
     }
 
-    deleteMany(ids) {
+    deleteMany(ids: number[]) {
         this.todosData = this.todosData.filter((todo: any) => !ids.includes(todo.id));
     }
 
-    search(searchTerm) {
-        const regex = new RegExp(searchTerm, 'i'); // 'i' for case-insensitive
+    search(searchTerm: string) {
+        const regex = new RegExp(searchTerm, 'i');
         return this.todosData.filter((todo: any) => regex.test(todo.todo));
     }
 }

@@ -1,6 +1,20 @@
 import axiosInstance from "../utils/axios";
+import ITodo from "../interfaces/ITodo";
 
-const TodosService = {
+interface ITodosService {
+    getTodos: () => Promise<{
+        limit: number;
+        todos: ITodo[];
+        skip: number;
+        total: number;
+    }>;
+    deleteOne: (id: number) => Promise<boolean>;
+    deleteMany: (ids: number[]) => Promise<boolean>;
+    search: (searchTerm: string) => Promise<ITodo[] | null>;
+
+}
+
+const TodosService: ITodosService = {
     getTodos: async () => {
         try {
             const response = await axiosInstance.get('/todos', {
@@ -8,6 +22,7 @@ const TodosService = {
                     limit: 0
                 }
             });
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.log(error);

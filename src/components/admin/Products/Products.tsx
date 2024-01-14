@@ -5,10 +5,11 @@ import {GridColDef} from "@mui/x-data-grid";
 import {useLoader} from "../../Loader/Loader";
 import ProductsService from "../../../services/ProductsService";
 import productsStore from "../../../stores/ProductsStore";
+import IProduct from "../../../interfaces/IProduct";
 
 const Products = observer(() => {
     const {showLoader, hideLoader} = useLoader();
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState<IProduct[]>([]);
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},
@@ -28,7 +29,7 @@ const Products = observer(() => {
     ];
 
     useEffect(() => {
-        if(productsStore.data.length > 0) return setRows(productsStore.data);
+        if (productsStore.data.length > 0) return setRows(productsStore.data);
         showLoader();
         ProductsService.getProducts().then((data) => {
             productsStore.data = data.products;
@@ -38,7 +39,7 @@ const Products = observer(() => {
     }, [])
 
 
-    return <Content columns={columns} rows={rows} setRows={setRows}  service={ProductsService} store={productsStore}/>
+    return <Content columns={columns} rows={rows} setRows={setRows} service={ProductsService} store={productsStore}/>
 });
 
 export default Products;

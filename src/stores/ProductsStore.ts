@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
+import IProduct from "../interfaces/IProduct";
 
 class ProductsStore {
-    productsData = []
+    productsData: IProduct[] = []
 
     constructor() {
         makeAutoObservable(this);
@@ -15,11 +16,11 @@ class ProductsStore {
         return this.productsData;
     }
 
-    deleteOne(id) {
+    deleteOne(id: number) {
         this.productsData = this.productsData.filter((product: any) => product.id !== id);
     }
 
-    deleteMany(ids) {
+    deleteMany(ids: number[]) {
         this.productsData = this.productsData.filter((product: any) => !ids.includes(product.id));
     }
 

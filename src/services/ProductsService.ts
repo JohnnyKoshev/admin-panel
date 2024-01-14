@@ -1,6 +1,20 @@
 import axiosInstance from "../utils/axios";
+import IProduct from "../interfaces/IProduct";
+import {AxiosResponse} from "axios";
 
-const ProductsService = {
+interface IProductsService {
+    getProducts: () => Promise<{
+        limit: number;
+        products: IProduct[];
+        skip: number;
+        total: number;
+    }>;
+    deleteOne: (id: number) => Promise<boolean>;
+    deleteMany: (ids: number[]) => Promise<boolean>;
+    search: (searchTerm: string) => Promise<IProduct[]>;
+}
+
+const ProductsService: IProductsService = {
     getProducts: async () => {
         try {
             const response = await axiosInstance.get('/products', {
@@ -37,7 +51,7 @@ const ProductsService = {
             return false;
         }
     },
-    search: async (searchTerm: string) => {
+    search: async (searchTerm: string): Promise<IProduct[]> => {
         try {
             const response = await axiosInstance.get('/products/search', {
                 params: {

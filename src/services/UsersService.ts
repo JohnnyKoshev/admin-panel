@@ -1,6 +1,19 @@
 import axiosInstance from "../utils/axios";
+import IUser from "../interfaces/IUser";
 
-const UsersService = {
+interface IUsersService {
+    getUsers: () => Promise<{
+        limit: number;
+        users: IUser[];
+        skip: number;
+        total: number;
+    }>;
+    deleteOne: (id: number) => Promise<boolean>;
+    deleteMany: (ids: number[]) => Promise<boolean>;
+    search: (searchTerm: string) => Promise<IUser[]>;
+}
+
+const UsersService: IUsersService = {
     getUsers: async () => {
         try {
             const response = await axiosInstance.get('/users', {

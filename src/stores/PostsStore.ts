@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
+import IPost from "../interfaces/IPost";
 
 class PostsStore {
-    postsData = []
+    postsData: IPost[] = []
 
     constructor() {
         makeAutoObservable(this);
@@ -15,11 +16,11 @@ class PostsStore {
         return this.postsData;
     }
 
-    deleteOne(id) {
+    deleteOne(id:number) {
         this.postsData = this.postsData.filter((post: any) => post.id !== id);
     }
 
-    deleteMany(ids) {
+    deleteMany(ids: number[]) {
         this.postsData = this.postsData.filter((post: any) => !ids.includes(post.id));
     }
 

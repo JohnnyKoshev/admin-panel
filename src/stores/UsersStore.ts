@@ -1,7 +1,8 @@
 import {makeAutoObservable} from "mobx";
+import IUser from "../interfaces/IUser";
 
 class UsersStore {
-    usersData = []
+    usersData: IUser[] = []
 
     constructor() {
         makeAutoObservable(this);
@@ -15,11 +16,11 @@ class UsersStore {
         return this.usersData;
     }
 
-    deleteOne(id) {
+    deleteOne(id: number) {
         this.usersData = this.usersData.filter((user: any) => user.id !== id);
     }
 
-    deleteMany(ids) {
+    deleteMany(ids: number[]) {
         this.usersData = this.usersData.filter((user: any) => !ids.includes(user.id));
     }
 

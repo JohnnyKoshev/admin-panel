@@ -1,6 +1,19 @@
 import axiosInstance from "../utils/axios";
+import IPost from "../interfaces/IPost";
 
-const PostsService = {
+interface IPostsService {
+    getPosts: () => Promise<{
+        'limit': number;
+        'posts': IPost[];
+        'skip': number;
+        'total': number;
+    }>;
+    deleteOne: (id: number) => Promise<boolean>;
+    deleteMany: (ids: number[]) => Promise<boolean>;
+    search: (searchTerm: string) => Promise<IPost[]>;
+}
+
+const PostsService: IPostsService = {
     getPosts: async () => {
         try {
             const response = await axiosInstance.get('/posts', {

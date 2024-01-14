@@ -5,10 +5,11 @@ import {GridColDef} from '@mui/x-data-grid';
 import {useLoader} from '../../Loader/Loader';
 import TodosService from '../../../services/TodosService';
 import todosStore from '../../../stores/TodosStore';
+import ITodo from "../../../interfaces/ITodo";
 
 const Todos = observer(() => {
     const {showLoader, hideLoader} = useLoader();
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState<ITodo[]>([]);
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},
