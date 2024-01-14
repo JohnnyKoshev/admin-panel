@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {observer} from 'mobx-react';
 import Content from '../Content/Content';
 import {GridColDef} from '@mui/x-data-grid';
@@ -8,6 +8,7 @@ import todosStore from '../../../stores/TodosStore';
 
 const Todos = observer(() => {
     const {showLoader, hideLoader} = useLoader();
+    const [rows, setRows] = useState([]);
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},
@@ -17,15 +18,16 @@ const Todos = observer(() => {
     ];
 
     useEffect(() => {
-        if (todosStore.todos.length > 0) return;
+        if (todosStore.data.length > 0) return setRows(todosStore.data);
         showLoader();
         TodosService.getTodos().then((data) => {
-            todosStore.todos = data.todos;
+            todosStore.data = data.todos;
+            setRows(data.todos);
             hideLoader();
         })
     }, [])
 
-    return <Content columns={columns} rows={todosStore.todos} service={TodosService} store={todosStore}/>
+    return <Content columns={columns} rows={rows} setRows={setRows} service={TodosService} store={todosStore}/>
 });
 
 export default Todos;

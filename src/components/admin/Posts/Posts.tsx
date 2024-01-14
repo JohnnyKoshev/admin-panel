@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react";
 import Content from "../Content/Content";
 import {GridColDef} from "@mui/x-data-grid";
@@ -8,6 +8,7 @@ import postsStore from "../../../stores/PostsStore";
 
 const Posts = observer(() => {
     const {showLoader, hideLoader} = useLoader();
+    const [rows, setRows] = useState([]);
 
     const columns: GridColDef[] = [
         {field: 'id', headerName: 'ID', width: 70},
@@ -25,17 +26,18 @@ const Posts = observer(() => {
 
 
     useEffect(() => {
-        if(postsStore.posts.length > 0) return;
+        if (postsStore.data.length > 0) return setRows(postsStore.data);
         showLoader();
         PostsService.getPosts().then((data) => {
-            postsStore.posts = data.posts;
+            postsStore.data = data.posts;
+            setRows(data.posts);
             hideLoader();
         })
 
     }, [])
 
 
-    return <Content columns={columns} rows={postsStore.posts} service={PostsService} store={postsStore}/>
+    return <Content columns={columns} rows={rows} setRows={setRows} service={PostsService} store={postsStore}/>
 });
 
 export default Posts;

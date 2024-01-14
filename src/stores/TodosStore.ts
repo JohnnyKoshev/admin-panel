@@ -7,11 +7,11 @@ class TodosStore {
         makeAutoObservable(this);
     }
 
-    set todos(data) {
+    set data(data) {
         this.todosData = data;
     }
 
-    get todos() {
+    get data() {
         return this.todosData;
     }
 
@@ -21,6 +21,11 @@ class TodosStore {
 
     deleteMany(ids) {
         this.todosData = this.todosData.filter((todo: any) => !ids.includes(todo.id));
+    }
+
+    search(searchTerm) {
+        const regex = new RegExp(searchTerm, 'i'); // 'i' for case-insensitive
+        return this.todosData.filter((todo: any) => regex.test(todo.todo));
     }
 }
 

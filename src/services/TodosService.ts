@@ -38,6 +38,9 @@ const TodosService = {
             console.log(error);
             return false;
         }
+    },
+    search: async (searchTerm: string) => {
+        return null;
     }
 }
 

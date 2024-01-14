@@ -36,6 +36,20 @@ const UsersService = {
             console.log(error);
             return false;
         }
+    },
+    search: async (searchTerm: string) => {
+        try {
+            const response = await axiosInstance.get('/users/search', {
+                params: {
+                    limit: 0,
+                    q: searchTerm
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
     }
 }
 

@@ -10,42 +10,70 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useLoader} from "../../Loader/Loader";
 import {debounce} from 'lodash';
 
-const Content = ({columns, rows, service, store}) => {
+const Content = ({columns, service, store, rows, setRows}) => {
     const [isSelection, setIsSelection] = useState(false);
     const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
     const [refactoredColumns, setRefactoredColumns] = useState<Array<GridColDef<any, any, any>>>([]);
     const [value, setValue] = useState('');
+    const [searchValue, setSearchValue] = useState('');
     const {showLoader, hideLoader} = useLoader();
     const apiRef = useGridApiRef();
 
     const handleDeleteEntryDebounced = debounce(async (id) => {
         showLoader()
-        if (await service.deleteOne(id))
+        if (await service.deleteOne(id)) {
             store.deleteOne(id);
+            setRows(store.data);
+        }
         hideLoader();
     }, 300);
     const handleDeleteEntriesDebounced = debounce(async () => {
         showLoader();
-        if (isSelection)
-            if (await service.deleteMany(selectedIds))
+        if (isSelection) {
+            if (await service.deleteMany(selectedIds)) {
                 store.deleteMany(selectedIds);
+                setRows(store.data);
+            }
+        }
         hideLoader();
+    }, 300);
+    const handleSearchDebounced = debounce(async (value) => {
+        console.log(value)
+        try {
+            showLoader();
+            if (value === '') setRows(store.data);
+            const data = await service.search(value);
+            if (data === null) {
+                setRows(store.search(value));
+            } else {
+                const filteredRows = data[`${window.location.href.split('/').slice(-1)}`].filter(apiEntry =>
+                    store.data.some(localEntry => localEntry.id === apiEntry.id)
+                );
+                setRows(filteredRows);
+                console.log(filteredRows);
+            }
+            hideLoader();
+        } catch (e) {
+            console.log(e)
+            hideLoader();
+        }
     }, 300);
 
     useEffect(() => {
+        if (refactoredColumns.length > 0 || rows.length > 0) return;
         setRefactoredColumns([{
             field: 'actions', headerName: 'Actions', width: 130, renderCell: (params) => (
                 <div style={{display: "flex", flexDirection: "row"}}>
                     <IconButton>
                         <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteEntryDebounced(params.id)}>
+                    <IconButton onClick={async () => await handleDeleteEntryDebounced(params.id)}>
                         <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
                     </IconButton>
                 </div>
             )
         }, ...columns]);
-    }, []);
+    }, [columns]);
 
 
     return <div className={styles.contentContainer}>
@@ -58,8 +86,11 @@ const Content = ({columns, rows, service, store}) => {
                     sx={{ml: 1, flex: 1}}
                     placeholder="Search for entry"
                     inputProps={{'aria-label': 'search bar'}}
-                />
-                <IconButton type="button" sx={{p: '10px'}} aria-label="search">
+                    onChange={(e) => {
+                        setSearchValue(e.target.value);
+                    }}/>
+                <IconButton type="button" sx={{p: '10px'}} aria-label="search"
+                            onClick={() => handleSearchDebounced(searchValue)}>
                     <SearchIcon/>
                 </IconButton>
             </Paper>
@@ -69,7 +100,7 @@ const Content = ({columns, rows, service, store}) => {
                 </Button>
                 {isSelection ?
                     <img src={TrashIcon} alt="delete icon" style={{width: "50px", cursor: "pointer"}}
-                         onClick={handleDeleteEntriesDebounced}/> :
+                         onClick={async () => await handleDeleteEntriesDebounced()}/> :
                     <img src={TrashIconDisabled} alt="delete icon disabled" style={{width: "50px"}}/>}
             </span>
         </div>

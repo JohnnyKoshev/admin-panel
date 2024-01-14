@@ -7,11 +7,11 @@ class ProductsStore {
         makeAutoObservable(this);
     }
 
-    set products(data) {
+    set data(data) {
         this.productsData = data;
     }
 
-    get products() {
+    get data() {
         return this.productsData;
     }
 

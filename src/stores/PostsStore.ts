@@ -7,11 +7,11 @@ class PostsStore {
         makeAutoObservable(this);
     }
 
-    set posts(data) {
+    set data(data) {
         this.postsData = data;
     }
 
-    get posts() {
+    get data() {
         return this.postsData;
     }
 
