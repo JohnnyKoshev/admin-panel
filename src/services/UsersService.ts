@@ -11,6 +11,7 @@ interface IUsersService {
     deleteOne: (id: number) => Promise<boolean>;
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IUser[]>;
+    addOne: (user: IUser) => Promise<IUser | null>;
 }
 
 const UsersService: IUsersService = {
@@ -63,7 +64,18 @@ const UsersService: IUsersService = {
             console.log(error);
             return [];
         }
+    },
+
+    addOne: async (user: IUser) => {
+        try {
+            const response = await axiosInstance.post('/users/add', user);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
+
 }
 
 export default UsersService;

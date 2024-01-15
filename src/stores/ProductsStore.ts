@@ -24,6 +24,14 @@ class ProductsStore {
         this.productsData = this.productsData.filter((product: any) => !ids.includes(product.id));
     }
 
+    addOne(product: IProduct) {
+        this.productsData.push(product);
+    }
+
+    getIds() {
+        return this.productsData.map((product: IProduct) => product.id);
+    }
+
 }
 
 const productsStore = new ProductsStore();

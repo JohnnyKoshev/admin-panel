@@ -19,7 +19,7 @@ const Layout = observer(() => {
         {iconSrc: PostIcon, text: 'Posts'},
         {iconSrc: TodoIcon, text: 'Todos'},
     ];
-    const [selected, setSelected] = useState(0);
+    const [selected, setSelected] = useState(-1);
 
     const handleSideBarElementClick = (
         event: React.MouseEvent<HTMLSpanElement>,
@@ -30,6 +30,16 @@ const Layout = observer(() => {
         setSelected(index);
         navigate(`/main/${textElement.innerText.toLowerCase()}`);
     };
+
+    const identifyIdx = () => {
+        const path = window.location.href.split('/').slice(-1)[0];
+        const idx = sideBarElements.findIndex(element => element.text.toLowerCase() === path);
+        setSelected(idx);
+    }
+
+    useEffect(() => {
+        identifyIdx();
+    }, []);
 
 
     return <div className={styles.layoutContainer}>

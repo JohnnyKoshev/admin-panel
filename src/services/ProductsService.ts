@@ -12,6 +12,7 @@ interface IProductsService {
     deleteOne: (id: number) => Promise<boolean>;
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IProduct[]>;
+    addOne: (product: IProduct) => Promise<IProduct | null>;
 }
 
 const ProductsService: IProductsService = {
@@ -63,6 +64,15 @@ const ProductsService: IProductsService = {
         } catch (error) {
             console.log(error);
             return [];
+        }
+    },
+    addOne: async (product: IProduct): Promise<IProduct | null> => {
+        try {
+            const response: AxiosResponse = await axiosInstance.post('/products/add', product);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     }
 

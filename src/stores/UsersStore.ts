@@ -24,6 +24,14 @@ class UsersStore {
         this.usersData = this.usersData.filter((user: any) => !ids.includes(user.id));
     }
 
+    addOne(user: IUser) {
+        this.usersData.push(user);
+    }
+
+    getIds() {
+        return this.usersData.map((user: IUser) => user.id);
+    }
+
 }
 
 const usersStore = new UsersStore();

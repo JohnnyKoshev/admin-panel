@@ -11,7 +11,7 @@ interface ITodosService {
     deleteOne: (id: number) => Promise<boolean>;
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<ITodo[] | null>;
-
+    addOne: (todo: ITodo) => Promise<ITodo | null>;
 }
 
 const TodosService: ITodosService = {
@@ -56,6 +56,16 @@ const TodosService: ITodosService = {
     },
     search: async (searchTerm: string) => {
         return null;
+    },
+
+    addOne: async (todo: ITodo) => {
+        try {
+            const response = await axiosInstance.post('/todos/add', todo);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
 }
 

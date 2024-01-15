@@ -11,6 +11,7 @@ interface IPostsService {
     deleteOne: (id: number) => Promise<boolean>;
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IPost[]>;
+    addOne: (post: IPost) => Promise<IPost | null>;
 }
 
 const PostsService: IPostsService = {
@@ -66,6 +67,15 @@ const PostsService: IPostsService = {
         } catch (error) {
             console.log(error);
             return [];
+        }
+    },
+    addOne: async (post: IPost) => {
+        try {
+            const response = await axiosInstance.post('/posts/add', post);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
         }
     }
 

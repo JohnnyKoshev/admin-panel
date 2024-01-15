@@ -28,6 +28,14 @@ class TodosStore {
         const regex = new RegExp(searchTerm, 'i');
         return this.todosData.filter((todo: any) => regex.test(todo.todo));
     }
+
+    addOne(todo: ITodo) {
+        this.todosData.push(todo);
+    }
+
+    getIds() {
+        return this.todosData.map((todo: ITodo) => todo.id);
+    }
 }
 
 const todosStore = new TodosStore();

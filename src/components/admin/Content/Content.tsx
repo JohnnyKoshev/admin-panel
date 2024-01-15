@@ -9,6 +9,9 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useLoader} from "../../Loader/Loader";
 import {debounce} from 'lodash';
+import AddEntry from "./AddEntry/AddEntry";
+import generateId from "../../../utils/IdGenerator";
+import {runInAction} from "mobx"
 
 const Content = ({columns, service, store, rows, setRows}) => {
     const [isSelection, setIsSelection] = useState(false);
@@ -16,13 +19,17 @@ const Content = ({columns, service, store, rows, setRows}) => {
     const [refactoredColumns, setRefactoredColumns] = useState<Array<GridColDef<any, any, any>>>([]);
     const [value, setValue] = useState('');
     const [searchValue, setSearchValue] = useState('');
+    const [addOpen, setAddOpen] = useState(false);
     const {showLoader, hideLoader} = useLoader();
     const apiRef = useGridApiRef();
 
-    const handleDeleteEntryDebounced = debounce(async (id) => {
+    const handleAddOpen = () => setAddOpen(true);
+    const handleAddClose = () => setAddOpen(false);
+
+    const handleDeleteEntryDebounced = debounce(async (params) => {
         showLoader()
-        if (await service.deleteOne(id)) {
-            store.deleteOne(id);
+        if (await service.deleteOne(params.id) || store.data.find(entry => entry.id === params.id)) {
+            store.deleteOne(params.id);
             setRows(store.data);
         }
         hideLoader();
@@ -30,7 +37,7 @@ const Content = ({columns, service, store, rows, setRows}) => {
     const handleDeleteEntriesDebounced = debounce(async () => {
         showLoader();
         if (isSelection) {
-            if (await service.deleteMany(selectedIds)) {
+            if (await service.deleteMany(selectedIds) || store.data.some(entry => selectedIds.includes(entry.id))) {
                 store.deleteMany(selectedIds);
                 setRows(store.data);
             }
@@ -59,6 +66,24 @@ const Content = ({columns, service, store, rows, setRows}) => {
         }
     }, 300);
 
+    const handleAddEntryDebounced = async (formData) => {
+        showLoader();
+        formData['id'] = generateId(store.getIds());
+        const response = await service.addOne(formData);
+        if (response) {
+            store.addOne(response);
+            setRows([...rows]);
+        }
+
+        hideLoader();
+    };
+
+    useEffect(() => {
+
+        setRows(store.data);
+
+    }, [store.data]);
+
     useEffect(() => {
         if (refactoredColumns.length > 0 || rows.length > 0) return;
         setRefactoredColumns([{
@@ -67,7 +92,7 @@ const Content = ({columns, service, store, rows, setRows}) => {
                     <IconButton>
                         <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
                     </IconButton>
-                    <IconButton onClick={async () => await handleDeleteEntryDebounced(params.id)}>
+                    <IconButton onClick={async () => await handleDeleteEntryDebounced(params)}>
                         <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
                     </IconButton>
                 </div>
@@ -95,7 +120,7 @@ const Content = ({columns, service, store, rows, setRows}) => {
                 </IconButton>
             </Paper>
             <span className={styles.contentActionsContainer}>
-                <Button variant="contained" color="success">
+                <Button variant="contained" color="success" onClick={handleAddOpen}>
                     Add Entry
                 </Button>
                 {isSelection ?
@@ -103,6 +128,8 @@ const Content = ({columns, service, store, rows, setRows}) => {
                          onClick={async () => await handleDeleteEntriesDebounced()}/> :
                     <img src={TrashIconDisabled} alt="delete icon disabled" style={{width: "50px"}}/>}
             </span>
+            <AddEntry open={addOpen} handleClose={handleAddClose} columns={columns} store={store} service={service}
+                      handleAdd={handleAddEntryDebounced}/>
         </div>
         <TextField
             placeholder="Selected Cell Value"
