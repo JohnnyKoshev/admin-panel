@@ -45,7 +45,7 @@ const EntryAction = observer(({open, handleClose, columns, handleRequest, entryD
         let isValid = true;
         refactoredColumns.forEach(column => {
             console.log(formData);
-            if (!formData[column.field]) {
+            if (!formData[column.field] && formData[column.field] !== false) {
                 errors[column.field] = 'This field is required';
                 isValid = false;
             }

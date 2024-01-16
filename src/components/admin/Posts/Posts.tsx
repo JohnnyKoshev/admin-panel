@@ -29,7 +29,7 @@ const Posts = observer(() => {
     useEffect(() => {
         if (postsStore.data.length > 0) return setRows(postsStore.data);
         showLoader();
-        PostsService.getPosts().then((data) => {
+        PostsService.getAll().then((data) => {
             postsStore.data = data.posts;
             setRows(data.posts);
             hideLoader();

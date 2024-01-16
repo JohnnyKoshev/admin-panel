@@ -31,7 +31,7 @@ const Products = observer(() => {
     useEffect(() => {
         if (productsStore.data.length > 0) return setRows(productsStore.data);
         showLoader();
-        ProductsService.getProducts().then((data) => {
+        ProductsService.getAll().then((data) => {
             productsStore.data = data.products;
             setRows(data.products);
             hideLoader();

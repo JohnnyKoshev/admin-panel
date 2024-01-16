@@ -29,7 +29,7 @@ const Users = observer(() => {
     useEffect(() => {
         if (usersStore.data.length > 0) return setRows(usersStore.data);
         showLoader();
-        UsersService.getUsers().then((data) => {
+        UsersService.getAll().then((data) => {
             usersStore.data = data.users;
             setRows(data.users);
             hideLoader();

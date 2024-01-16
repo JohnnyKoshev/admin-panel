@@ -1,42 +1,5 @@
-import {makeAutoObservable} from "mobx";
 import IUser from "../interfaces/IUser";
+import GenericStore from "./GenericStore";
 
-class UsersStore {
-    usersData: IUser[] = []
-
-    constructor() {
-        makeAutoObservable(this);
-    }
-
-    set data(data) {
-        this.usersData = data;
-    }
-
-    get data() {
-        return this.usersData;
-    }
-
-    deleteOne(id: number) {
-        this.usersData = this.usersData.filter((user: any) => user.id !== id);
-    }
-
-    deleteMany(ids: number[]) {
-        this.usersData = this.usersData.filter((user: any) => !ids.includes(user.id));
-    }
-
-    addOne(user: IUser) {
-        this.usersData.push(user);
-    }
-
-    updateOne(user: IUser) {
-        this.usersData = this.usersData.map((u: IUser) => u.id === user.id ? user : u);
-    }
-
-    getIds() {
-        return this.usersData.map((user: IUser) => user.id);
-    }
-
-}
-
-const usersStore = new UsersStore();
+const usersStore = new GenericStore<IUser>();
 export default usersStore;

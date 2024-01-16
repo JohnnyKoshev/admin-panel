@@ -1,47 +1,5 @@
-import {makeAutoObservable} from "mobx";
 import ITodo from "../interfaces/ITodo";
+import GenericStore from "./GenericStore";
 
-class TodosStore {
-    todosData: ITodo[] = []
-
-    constructor() {
-        makeAutoObservable(this);
-    }
-
-    set data(data) {
-        this.todosData = data;
-    }
-
-    get data() {
-        return this.todosData;
-    }
-
-    deleteOne(id: number) {
-        this.todosData = this.todosData.filter((todo: any) => todo.id !== id);
-    }
-
-    deleteMany(ids: number[]) {
-        this.todosData = this.todosData.filter((todo: any) => !ids.includes(todo.id));
-    }
-
-    search(searchTerm: string) {
-        const regex = new RegExp(searchTerm, 'i');
-        return this.todosData.filter((todo: any) => regex.test(todo.todo));
-    }
-
-    addOne(todo: ITodo) {
-        this.todosData.push(todo);
-    }
-
-    updateOne(todo: ITodo) {
-        this.todosData = this.todosData.map((t: ITodo) => t.id === todo.id ? todo : t);
-    }
-
-    getIds() {
-        return this.todosData.map((todo: ITodo) => todo.id);
-    }
-
-}
-
-const todosStore = new TodosStore();
+const todosStore = new GenericStore<ITodo>();
 export default todosStore;

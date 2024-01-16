@@ -21,7 +21,7 @@ const Todos = observer(() => {
     useEffect(() => {
         if (todosStore.data.length > 0) return setRows(todosStore.data);
         showLoader();
-        TodosService.getTodos().then((data) => {
+        TodosService.getAll().then((data) => {
             todosStore.data = data.todos;
             setRows(data.todos);
             hideLoader();
