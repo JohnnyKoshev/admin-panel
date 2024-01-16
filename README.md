@@ -1,7 +1,7 @@
 # Sample Authentication Details
 
-## Username: atuny0
-## Password: 9uQFF1Lh
+### Username: `atuny0`
+### Password: `9uQFF1Lh`
 
 # Getting Started with Create React App
 
