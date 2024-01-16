@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Modal, Box, Typography, TextField, Button, InputLabel, Select, MenuItem} from '@mui/material';
 import {observer} from 'mobx-react';
 import {GridColDef} from "@mui/x-data-grid";
-import generateId from "../../../../utils/IdGenerator";
-import {useLoader} from "../../../Loader/Loader";
 
 const modalStyle = {
     position: 'absolute',
@@ -19,26 +17,24 @@ const modalStyle = {
     p: 4,
 };
 
-const AddEntry = observer(({open, handleClose, columns, store, service, handleAdd}) => {
+const EntryAction = observer(({open, handleClose, columns, handleRequest, entryData}) => {
     const [refactoredColumns, setRefactoredColumns] = useState<Array<GridColDef<any, any, any>>>(columns);
-    const {showLoader, hideLoader} = useLoader();
-
-    const initialFormData = columns.reduce((acc, column) => {
+    const [formData, setFormData] = useState(columns.reduce((acc, column) => {
+        acc[column.field] = entryData ? entryData[`${column.field}`] : '';
+        return acc;
+    }, {}));
+    const [formErrors, setFormErrors] = useState(columns.reduce((acc, column) => {
         acc[column.field] = '';
         return acc;
-    }, {});
-
-    const initialFormErrors = columns.reduce((acc, column) => {
-        acc[column.field] = '';
-        return acc;
-    }, {});
-
-    const [formData, setFormData] = useState(initialFormData);
-    const [formErrors, setFormErrors] = useState(initialFormErrors);
+    }, {}));
 
     useEffect(() => {
         setRefactoredColumns(refactoredColumns.filter(column => column.field !== 'id'));
     }, []);
+
+    useEffect(() => {
+        setFormData(entryData);
+    }, [open, entryData]);
 
     const handleChange = (event) => {
         setFormData({...formData, [event.target.name]: event.target.value});
@@ -60,15 +56,22 @@ const AddEntry = observer(({open, handleClose, columns, store, service, handleAd
 
     const handleCloseModal = () => {
         handleClose();
-        setFormData(initialFormData);
-        setFormErrors(initialFormErrors);
+        setFormData(columns.reduce((acc, column) => {
+            acc[column.field] = '';
+            return acc;
+        }, {}));
+        setFormErrors(columns.reduce((acc, column) => {
+            acc[column.field] = '';
+            return acc;
+        }, {}));
+        console.dir(entryData);
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (validate()) {
             console.log(formData);
-            await handleAdd(formData);
+            await handleRequest(formData);
             handleCloseModal();
         }
     };
@@ -97,9 +100,14 @@ const AddEntry = observer(({open, handleClose, columns, store, service, handleAd
                         />
 
                     ))}
-                    <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>
-                        Add Entry
-                    </Button>
+                    {entryData ?
+                        <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>
+                            Edit Entry
+                        </Button> :
+                        <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>
+                            Add Entry
+                        </Button>
+                    }
                 </Box>
             </Box>
         </Modal>
@@ -107,4 +115,4 @@ const AddEntry = observer(({open, handleClose, columns, store, service, handleAd
         ;
 });
 
-export default AddEntry;
+export default EntryAction;

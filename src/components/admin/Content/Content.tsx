@@ -9,9 +9,13 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useLoader} from "../../Loader/Loader";
 import {debounce} from 'lodash';
-import AddEntry from "./AddEntry/AddEntry";
+import EntryAction from "./EntryAction/EntryAction";
 import generateId from "../../../utils/IdGenerator";
 import {runInAction} from "mobx"
+import IPost from "../../../interfaces/IPost";
+import ITodo from "../../../interfaces/ITodo";
+import IUser from "../../../interfaces/IUser";
+import IProduct from "../../../interfaces/IProduct";
 
 const Content = ({columns, service, store, rows, setRows}) => {
     const [isSelection, setIsSelection] = useState(false);
@@ -20,11 +24,30 @@ const Content = ({columns, service, store, rows, setRows}) => {
     const [value, setValue] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [addOpen, setAddOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
+    const [entryData, setEntryData] = useState<IPost | ITodo | IUser | IProduct>(columns.reduce((acc, column) => {
+        acc[column.field] = '';
+        return acc;
+
+    }));
     const {showLoader, hideLoader} = useLoader();
     const apiRef = useGridApiRef();
 
-    const handleAddOpen = () => setAddOpen(true);
+    const handleAddOpen = () => {
+        setEntryData(
+            columns.reduce((acc, column) => {
+                    acc[column.field] = '';
+                    return acc;
+                }
+            ));
+        setAddOpen(true);
+    }
     const handleAddClose = () => setAddOpen(false);
+    const handleEditOpen = (params) => {
+        setEntryData(params.row);
+        setEditOpen(true);
+    }
+    const handleEditClose = () => setEditOpen(false);
 
     const handleDeleteEntryDebounced = debounce(async (params) => {
         showLoader()
@@ -71,12 +94,32 @@ const Content = ({columns, service, store, rows, setRows}) => {
         formData['id'] = generateId(store.getIds());
         const response = await service.addOne(formData);
         if (response) {
+            for (let key in formData) {
+                if (!response[key]) response[key] = formData[key];
+            }
             store.addOne(response);
             setRows([...rows]);
         }
 
         hideLoader();
     };
+
+    const handleEditEntryDebounced = debounce(async (formData) => {
+        showLoader();
+        const response = await service.updateOne(formData);
+        if (response) {
+            console.log(formData);
+            console.log(response, '1');
+            for (let key in formData) {
+                if (!response[key]) response[key] = formData[key];
+            }
+            console.log(response, '2');
+            store.updateOne(response);
+            setRows([...rows]);
+        }
+        hideLoader();
+    }, 300);
+
 
     useEffect(() => {
 
@@ -90,7 +133,8 @@ const Content = ({columns, service, store, rows, setRows}) => {
             field: 'actions', headerName: 'Actions', width: 130, renderCell: (params) => (
                 <div style={{display: "flex", flexDirection: "row"}}>
                     <IconButton>
-                        <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}/>
+                        <BorderColorIcon color={"primary"} style={{cursor: "pointer"}}
+                                         onClick={() => handleEditOpen(params)}/>
                     </IconButton>
                     <IconButton onClick={async () => await handleDeleteEntryDebounced(params)}>
                         <DeleteIcon color={"error"} style={{cursor: "pointer"}}/>
@@ -128,8 +172,7 @@ const Content = ({columns, service, store, rows, setRows}) => {
                          onClick={async () => await handleDeleteEntriesDebounced()}/> :
                     <img src={TrashIconDisabled} alt="delete icon disabled" style={{width: "50px"}}/>}
             </span>
-            <AddEntry open={addOpen} handleClose={handleAddClose} columns={columns} store={store} service={service}
-                      handleAdd={handleAddEntryDebounced}/>
+
         </div>
         <TextField
             placeholder="Selected Cell Value"
@@ -166,10 +209,11 @@ const Content = ({columns, service, store, rows, setRows}) => {
                 }}
             />
         </div>
-
-
-    </div>
-        ;
+        <EntryAction open={addOpen} handleClose={handleAddClose} columns={columns}
+                     handleRequest={handleAddEntryDebounced} entryData={entryData}/>
+        <EntryAction open={editOpen} handleClose={handleEditClose} columns={columns}
+                     handleRequest={handleEditEntryDebounced} entryData={entryData}/>
+    </div>;
 }
 
 export default Content;

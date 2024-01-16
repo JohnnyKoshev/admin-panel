@@ -12,6 +12,7 @@ interface ITodosService {
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<ITodo[] | null>;
     addOne: (todo: ITodo) => Promise<ITodo | null>;
+    updateOne: (todo: ITodo) => Promise<ITodo | null>;
 }
 
 const TodosService: ITodosService = {
@@ -61,6 +62,21 @@ const TodosService: ITodosService = {
     addOne: async (todo: ITodo) => {
         try {
             const response = await axiosInstance.post('/todos/add', todo);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+    updateOne: async (todo: ITodo) => {
+        try {
+            const body = {};
+            for (let key in todo) {
+                if (todo[key] !== null && todo[key] !== undefined && key !== 'id') {
+                    body[key] = todo[key];
+                }
+            }
+            const response = await axiosInstance.put(`/todos/${todo.id}`, body);
             return response.data;
         } catch (error) {
             console.log(error);

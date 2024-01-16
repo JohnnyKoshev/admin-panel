@@ -28,9 +28,14 @@ class PostsStore {
         this.postsData.push(post);
     }
 
+    updateOne(post: IPost) {
+        this.postsData = this.postsData.map((p: IPost) => p.id === post.id ? post : p);
+    }
+
     getIds() {
         return this.postsData.map((post: IPost) => post.id);
     }
+
 }
 
 const postsStore = new PostsStore();

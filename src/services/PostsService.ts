@@ -12,6 +12,7 @@ interface IPostsService {
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IPost[]>;
     addOne: (post: IPost) => Promise<IPost | null>;
+    updateOne: (post: IPost) => Promise<IPost | null>;
 }
 
 const PostsService: IPostsService = {
@@ -72,6 +73,22 @@ const PostsService: IPostsService = {
     addOne: async (post: IPost) => {
         try {
             const response = await axiosInstance.post('/posts/add', post);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+
+    updateOne: async (post: IPost) => {
+        try {
+            const body = {};
+            for (let key in post) {
+                if (post[key] !== null && post[key] !== undefined && key !== 'id') {
+                    body[key] = post[key];
+                }
+            }
+            const response = await axiosInstance.put(`/posts/${post.id}`, body);
             return response.data;
         } catch (error) {
             console.log(error);

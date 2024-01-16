@@ -33,9 +33,14 @@ class TodosStore {
         this.todosData.push(todo);
     }
 
+    updateOne(todo: ITodo) {
+        this.todosData = this.todosData.map((t: ITodo) => t.id === todo.id ? todo : t);
+    }
+
     getIds() {
         return this.todosData.map((todo: ITodo) => todo.id);
     }
+
 }
 
 const todosStore = new TodosStore();

@@ -28,6 +28,10 @@ class ProductsStore {
         this.productsData.push(product);
     }
 
+    updateOne(product: IProduct) {
+        this.productsData = this.productsData.map((p: IProduct) => p.id === product.id ? product : p);
+    }
+
     getIds() {
         return this.productsData.map((product: IProduct) => product.id);
     }

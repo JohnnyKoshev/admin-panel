@@ -13,6 +13,7 @@ interface IProductsService {
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IProduct[]>;
     addOne: (product: IProduct) => Promise<IProduct | null>;
+    updateOne: (product: IProduct) => Promise<IProduct | null>;
 }
 
 const ProductsService: IProductsService = {
@@ -69,6 +70,22 @@ const ProductsService: IProductsService = {
     addOne: async (product: IProduct): Promise<IProduct | null> => {
         try {
             const response: AxiosResponse = await axiosInstance.post('/products/add', product);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+    updateOne: async (product: IProduct): Promise<IProduct | null> => {
+        try {
+            const body = {};
+            for (let key in product) {
+                if (product[key] !== null && product[key] !== undefined && key !== 'id') {
+                    body[key] = product[key];
+                }
+            }
+            const response: AxiosResponse = await axiosInstance.put(`/products/${product.id}`, body);
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.log(error);

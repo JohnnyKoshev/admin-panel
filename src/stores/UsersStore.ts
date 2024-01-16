@@ -28,6 +28,10 @@ class UsersStore {
         this.usersData.push(user);
     }
 
+    updateOne(user: IUser) {
+        this.usersData = this.usersData.map((u: IUser) => u.id === user.id ? user : u);
+    }
+
     getIds() {
         return this.usersData.map((user: IUser) => user.id);
     }

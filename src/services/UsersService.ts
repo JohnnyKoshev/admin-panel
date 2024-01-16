@@ -12,6 +12,7 @@ interface IUsersService {
     deleteMany: (ids: number[]) => Promise<boolean>;
     search: (searchTerm: string) => Promise<IUser[]>;
     addOne: (user: IUser) => Promise<IUser | null>;
+    updateOne: (user: IUser) => Promise<IUser | null>;
 }
 
 const UsersService: IUsersService = {
@@ -69,6 +70,21 @@ const UsersService: IUsersService = {
     addOne: async (user: IUser) => {
         try {
             const response = await axiosInstance.post('/users/add', user);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+    updateOne: async (user: IUser) => {
+        try {
+            const body = {};
+            for (let key in user) {
+                if (user[key] !== null && user[key] !== undefined && key !== 'id') {
+                    body[key] = user[key];
+                }
+            }
+            const response = await axiosInstance.put(`/users/${user.id}`, body);
             return response.data;
         } catch (error) {
             console.log(error);
